@@ -13,7 +13,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: 'ok',
     env: APP_ENV,
-    message: 'Practica 5 – API funcionando',
+    message: 'Practica 5 – API funcionandoo',
   });
 });
 
