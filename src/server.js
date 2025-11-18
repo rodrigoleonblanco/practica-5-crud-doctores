@@ -17,7 +17,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.use('/doctores', doctorsRouter);
+app.use('/doctores', doctorsRouter); 
 
 const PORT = process.env.PORT || 3000;
 
