@@ -10,7 +10,6 @@ if (!MONGO_URI) {
 async function connectDB() {
   try {
     await mongoose.connect(MONGO_URI, {
-      // opciones modernas, mongoose 7+ ya ajusta varias por defecto
     });
     console.log(`Conectado a MongoDB en ${MONGO_URI} (env=${APP_ENV})`);
   } catch (err) {
@@ -19,10 +18,6 @@ async function connectDB() {
   }
 }
 
-/**
- * Definimos el esquema de Doctor.
- * Puedes agregar campos según gustes.
- */
 const doctorSchema = new mongoose.Schema(
   {
     nombre: { type: String, required: true },
@@ -35,10 +30,8 @@ const doctorSchema = new mongoose.Schema(
   }
 );
 
-// Nombre colección según ambiente: doctores_local o doctores_prod
 const collectionName = `doctores_${APP_ENV}`;
 
-// Tercer parámetro = nombre exacto 
 const Doctor = mongoose.model('Doctor', doctorSchema, collectionName);
 
 module.exports = {
