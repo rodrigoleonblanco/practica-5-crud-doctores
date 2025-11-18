@@ -6,12 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
-# Variable global para el nombre del repo en ECR
 env:
   ECR_REPOSITORY: practica5-doctores-api
 
 jobs:
-  # 1) Build / test
   build-and-test:
     runs-on: ubuntu-latest
 
@@ -27,11 +25,6 @@ jobs:
       - name: Install dependencies (npm ci)
         run: npm ci
 
-      # Aquí irían tests si tuvieras
-      # - name: Run tests
-      #   run: npm test
-
-  # 2) Build + push a ECR
   docker-build-and-push:
     needs: build-and-test
     runs-on: ubuntu-latest
@@ -55,9 +48,7 @@ jobs:
       - name: Build, tag and push image to ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          # usamos el valor global directamente
           ECR_REPOSITORY: practica5-doctores-api
-          # tag de la imagen = SHA del commit
           IMAGE_TAG: ${{ github.sha }}
         run: |
           echo "Registry: $REGISTRY"
@@ -67,7 +58,6 @@ jobs:
           docker push $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "Image pushed: $REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-  # 3) Deploy a EC2
   deploy-to-ec2:
     needs: docker-build-and-push
     runs-on: ubuntu-latest
@@ -77,10 +67,9 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      # otra vez, valor directo
       ECR_REPOSITORY: practica5-doctores-api
       IMAGE_TAG: ${{ github.sha }}
-      AWS_ACCOUNT_ID: "315064826037"   # ID de tu cuenta de lab
+      AWS_ACCOUNT_ID: "315064826037"
       MONGO_URI_PROD: ${{ secrets.MONGO_URI_PROD }}
 
     steps:
