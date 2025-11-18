@@ -91,7 +91,6 @@ jobs:
           username: ec2-user
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
-          # Variables que se inyectan en la sesión SSH
           envs: AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY,AWS_SESSION_TOKEN,AWS_REGION,ECR_REPOSITORY,IMAGE_TAG,AWS_ACCOUNT_ID,MONGO_URI_PROD
           script: |
             set -e
@@ -114,8 +113,14 @@ jobs:
               -e APP_ENV=prod \
               $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
 
-            echo "Current containers:"
-            docker ps
+            echo "Waiting for application to start..."
+            sleep 10
 
-            echo "Healthcheck:"
-            curl -s http://localhost/health || (echo "Healthcheck failed" && exit 1)
+            echo "Healthcheck..."
+            if ! curl -fsS http://localhost/health; then
+              echo "Healthcheck failed, showing last logs:"
+              docker logs --tail 100 doctores-api || true
+              exit 1
+            fi
+
+            echo "Healthcheck OK"
