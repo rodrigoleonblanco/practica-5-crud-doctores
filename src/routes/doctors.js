@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { Doctor } = require('../db');
 
-// GET
 router.get('/', async (req, res) => {
   try {
     const doctores = await Doctor.find();
@@ -13,7 +12,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET /doctores/:id
 router.get('/:id', async (req, res) => {
   try {
     const doctor = await Doctor.findById(req.params.id);
@@ -27,7 +25,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /doctores
 router.post('/', async (req, res) => {
   try {
     const { nombre, especialidad, telefono, activo } = req.body;
@@ -53,7 +50,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// PUT /doctores/:id
 router.put('/:id', async (req, res) => {
   try {
     const { nombre, especialidad, telefono, activo } = req.body;
@@ -75,7 +71,6 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// DELETE /doctores/:id
 router.delete('/:id', async (req, res) => {
   try {
     const eliminado = await Doctor.findByIdAndDelete(req.params.id);
